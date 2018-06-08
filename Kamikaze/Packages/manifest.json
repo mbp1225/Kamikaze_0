@@ -3,6 +3,7 @@
     "com.unity.render-pipelines.lightweight": "1.1.4-preview",
     "com.unity.probuilder": "3.0.8",
     "com.unity.progrids": "3.0.2-preview",
-    "com.unity.textmeshpro": "1.2.3"
+    "com.unity.textmeshpro": "1.2.3",
+    "com.unity.shadergraph": "1.1.9-preview"
   }
 }
