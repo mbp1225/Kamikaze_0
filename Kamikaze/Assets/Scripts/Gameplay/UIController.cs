@@ -6,21 +6,24 @@ using TMPro;
 
 public class UIController : MonoBehaviour
 {
+    [SerializeField] GameController gc;
 
 	[Header("UI Card")]
 	//UI Card Attributes
 	//The card that shows up when you hover over a token.
 	[SerializeField] GameObject UICard;
-	[SerializeField] TextMeshProUGUI cardName;
-	[SerializeField] TextMeshProUGUI cardDescription;
-	[SerializeField] TextMeshProUGUI cardCost;
-	[SerializeField] TextMeshProUGUI cardValue;
-	[SerializeField] Image cardImage;
+    [SerializeField] Transform handCard;
+
+    [Space(10)]
+
+    [Header("Player 1")]
+    [SerializeField] Transform handP1;
+
 
 
 	void Start ()
 	{
-		
+        
 	}
 	
 	void Update ()
@@ -32,29 +35,30 @@ public class UIController : MonoBehaviour
 	{
 		UICard.transform.localPosition = new Vector3(Input.mousePosition.x - Screen.width/2 + Screen.width/5, Input.mousePosition.y - Screen.height/2, 0);
 
-		cardName.text = card.cardName;
-		cardDescription.text = card.cardDescription;
-		cardCost.text = card.cardCost.ToString();
-		cardImage.sprite = card.cardImage;
+        UICard.GetComponent<CardManager>().UpdateCard(card);
 
-		switch (card.Type)
-		{	
-			case Card.cardType.Unit:
-				cardValue.text = "Attack: " + card.attack;
-				break;
-
-			case Card.cardType.Structure:
-				cardValue.text = "Radius: " + card.influenceRadius;
-				break;
-		}
-		
-		UICard.SetActive(true);
+        UICard.SetActive(true);
 	}
 
 	public void ShowCard ()
 	{
 		UICard.SetActive(false);
 	}
+
+    public void UpdateHand(int player)
+    {
+        if (player == 1)
+        {
+            foreach (Transform card in handP1) Destroy(card);
+
+            for (int i = 0; i < GameController.handSize; i++)
+            {
+                Instantiate(handCard, handP1);
+                handP1.GetChild(i).GetComponent<CardManager>().UpdateCard(gc.player1.hand[i]);
+            }
+
+        }
+    }
 
 
 

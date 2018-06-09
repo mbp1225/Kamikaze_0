@@ -17,11 +17,11 @@ public class Token : MonoBehaviour
 	[SerializeField] Transform UI;
 	[SerializeField] Card card;
 
-	[SerializeField] Transform cam;
-
 
 	void Start ()
 	{
+        UI = GameObject.FindGameObjectWithTag("UIController").transform;
+
 		mesh = transform.GetChild(0);
 		col = transform.GetComponent<Collider>();
 		line = GetComponent<LineRenderer>();
@@ -67,6 +67,11 @@ public class Token : MonoBehaviour
 			else line.enabled = false;
 		}
 	}
+
+    public void SetCard(Card newCard)
+    {
+        card = newCard;
+    }
 
 	IEnumerator Move()
 	{

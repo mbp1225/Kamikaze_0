@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
-	struct Player
+	public struct Player
 	{
 		public List<Card> hand;
 		public List<Card> deck;
@@ -20,12 +20,14 @@ public class GameController : MonoBehaviour
 	int currentPlayer = 1;
 
 	static int deckSize = 30;
-	static int handSize = 5;
+	public static int handSize = 5;
 
-	Player player1, player2;
+	public Player player1, player2;
 
 	//References
 	[SerializeField] Transform UI;
+
+    [SerializeField] GameObject token;
 
 	void Start ()
 	{
@@ -75,5 +77,30 @@ public class GameController : MonoBehaviour
 			player2.hand.Add(player1.deck[1]);
 			player2.deck.RemoveAt(1);
 		}
-	}
+
+        //Update UI
+        UI.GetComponent<UIController>().UpdateHand(1);
+    }
+
+    public void PlayCard(Card card)
+    {
+        StartCoroutine(PositionToken(card));
+    }
+
+    IEnumerator PositionToken(Card currentCard)
+    {
+        print("Positioning token");
+        while (!Input.GetMouseButtonDown(0)) yield return null;
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit) && hit.transform.name == "Field")
+        {
+            //Give it a parent at some point;
+            GameObject newToken = Instantiate(token, hit.point, Quaternion.identity, null);
+            newToken.GetComponent<Token>().SetCard(currentCard);
+            print("Token positioned");
+        }
+    }
 }
