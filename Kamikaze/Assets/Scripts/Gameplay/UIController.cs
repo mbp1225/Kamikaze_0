@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 using TMPro;
 
 public class UIController : MonoBehaviour
@@ -19,17 +20,43 @@ public class UIController : MonoBehaviour
     [Header("Player 1")]
     [SerializeField] Transform handP1;
 
+    [Space(10)]
+
+    [Header("Turn Cover")]
+    [SerializeField] Transform turnCover;
+    bool coverOn = true;
+
+    [Header("Help Table")]
+    [SerializeField] Transform helpTable;
+    bool helpOn = false;
 
 
-	void Start ()
+
+    void Start ()
 	{
         
 	}
 	
 	void Update ()
 	{
-		
+        if (Input.GetKeyDown(KeyCode.F1)) ToggleHelp();
 	}
+
+    public void ToggleCover()
+    {
+        if (coverOn) turnCover.DOMoveY(Screen.height * 2, .5f);
+        else turnCover.DOMoveY(Screen.height/2, .5f);
+
+        coverOn = !coverOn;
+    }
+
+    public void ToggleHelp()
+    {
+        if (helpOn) helpTable.DOLocalMoveY(Screen.height - 190, .5f);
+        else helpTable.DOLocalMoveY(Screen.height - 450, .5f);
+
+        helpOn = !helpOn;
+    }
 
 	public void ShowCard (Card card)
 	{

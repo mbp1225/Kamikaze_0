@@ -82,6 +82,20 @@ public class GameController : MonoBehaviour
         UI.GetComponent<UIController>().UpdateHand(1);
     }
 
+    public void Turn()
+    {
+        if (currentPlayer == 1)
+        {
+            currentPlayer = 2;
+            //Everything else
+        }
+        else
+        {
+            currentPlayer = 1;
+            //Everything else
+        }
+    }
+
     public void PlayCard(Card card)
     {
         StartCoroutine(PositionToken(card));
