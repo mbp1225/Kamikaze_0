@@ -17,7 +17,7 @@ public class GameController : MonoBehaviour
 	[SerializeField] Card[] cards = new Card[5];
 	int energy = 5;
 	int turn = 1;
-	int currentPlayer = 1;
+	public int currentPlayer = 1;
 
 	static int deckSize = 30;
 	public static int handSize = 5;
@@ -26,12 +26,12 @@ public class GameController : MonoBehaviour
 
 	//References
 	[SerializeField] Transform UI;
-
     [SerializeField] GameObject token;
 
 	void Start ()
 	{
 		SetupGame();
+
 	}
 	
 	void Update ()
@@ -80,21 +80,29 @@ public class GameController : MonoBehaviour
 
         //Update UI
         UI.GetComponent<UIController>().UpdateHand(1);
+		UI.GetComponent<UIController>().UpdateHand(2);
     }
 
     public void Turn()
     {
         if (currentPlayer == 1)
         {
-            currentPlayer = 2;
+            currentPlayer = 2;			
+			Invoke("CallSwitchUI", 0.5f);
             //Everything else
         }
         else
         {
             currentPlayer = 1;
+			Invoke("CallSwitchUI", 0.5f);
             //Everything else
         }
     }
+
+	void CallSwitchUI()
+	{
+		UI.GetComponent<UIController>().SwitchUI();
+	}
 
     public void PlayCard(Card card)
     {
@@ -103,7 +111,7 @@ public class GameController : MonoBehaviour
 
     IEnumerator PositionToken(Card currentCard)
     {
-        print("Positioning token");
+        //print("Positioning token");
         while (!Input.GetMouseButtonDown(0)) yield return null;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -114,7 +122,8 @@ public class GameController : MonoBehaviour
             //Give it a parent at some point;
             GameObject newToken = Instantiate(token, hit.point, Quaternion.identity, null);
             newToken.GetComponent<Token>().SetCard(currentCard);
-            print("Token positioned");
+			newToken.GetComponent<Token>().SetPlayer(currentPlayer);
+            //print("Token positioned");
         }
     }
 }

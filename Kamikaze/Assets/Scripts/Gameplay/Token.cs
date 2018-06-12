@@ -11,21 +11,40 @@ public class Token : MonoBehaviour
 
 	LineRenderer line;
 
+	public int owner;
+
 	bool isMoving = false;
 
 	//References
 	[SerializeField] Transform UI;
 	[SerializeField] Card card;
 
+	GameController gc;
+
 
 	void Start ()
 	{
         UI = GameObject.FindGameObjectWithTag("UIController").transform;
+		gc = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
 
 		mesh = transform.GetChild(0);
 		col = transform.GetComponent<Collider>();
 		line = GetComponent<LineRenderer>();
 		line.enabled = false;
+	}
+
+	public void SetPlayer(int n)
+	{
+		if (n == 1)
+		{
+			owner = 1;
+			transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Color.blue;
+		}
+		if (n == 2)
+		{
+			owner = 2;
+			transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Color.red;
+		}
 	}
 	
 	void Update ()
@@ -94,6 +113,7 @@ public class Token : MonoBehaviour
 	void OnMouseDown()
 	{
 		UI.GetComponent<UIController>().ShowCard();
-		StartCoroutine(Move());
+		if (gc.currentPlayer == owner && !isMoving) StartCoroutine(Move());
+		else return;
 	}
 }

@@ -18,12 +18,23 @@ public class UIController : MonoBehaviour
     [Space(10)]
 
     [Header("Player 1")]
+    
+    [SerializeField] Transform p1;
     [SerializeField] Transform handP1;
 
     [Space(10)]
 
+    [Header("Player 2")]
+
+    [SerializeField] Transform p2;
+    [SerializeField] Transform handP2;
+
+    [Space(10)]
+
+
     [Header("Turn Cover")]
     [SerializeField] Transform turnCover;
+    [SerializeField] TextMeshProUGUI playerLabel;
     bool coverOn = true;
 
     [Header("Help Table")]
@@ -44,6 +55,9 @@ public class UIController : MonoBehaviour
 
     public void ToggleCover()
     {
+        if (gc.currentPlayer == 1) playerLabel.text = "Player One";
+        else if (gc.currentPlayer == 2) playerLabel.text = "Player Two";
+
         if (coverOn) turnCover.DOMoveY(Screen.height * 2, .5f);
         else turnCover.DOMoveY(Screen.height/2, .5f);
 
@@ -72,6 +86,20 @@ public class UIController : MonoBehaviour
 		UICard.SetActive(false);
 	}
 
+    public void SwitchUI ()
+    {
+        if (gc.currentPlayer == 1)
+        {
+            p1.gameObject.SetActive(true);//Quero que isso aqui demore
+            p2.gameObject.SetActive(false);//E isso
+        }
+        else if (gc.currentPlayer == 2)
+        {
+            p2.gameObject.SetActive(true);//E isso
+            p1.gameObject.SetActive(false);//E isso //Quebra não //Tá tudo vermelho
+        }
+    }
+
     public void UpdateHand(int player)
     {
         if (player == 1)
@@ -82,6 +110,18 @@ public class UIController : MonoBehaviour
             {
                 Instantiate(handCard, handP1);
                 handP1.GetChild(i).GetComponent<CardManager>().UpdateCard(gc.player1.hand[i]);
+            }
+
+        }
+        
+        if (player == 2)
+        {
+            foreach (Transform card in handP2) Destroy(card);
+
+            for (int i = 0; i < GameController.handSize; i++)
+            {
+                Instantiate(handCard, handP2);
+                handP2.GetChild(i).GetComponent<CardManager>().UpdateCard(gc.player2.hand[i]);
             }
 
         }
