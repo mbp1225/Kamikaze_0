@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 using TMPro;
 
 public class CardManager : MonoBehaviour
@@ -53,7 +54,11 @@ public class CardManager : MonoBehaviour
     public void Select()
     {
         print("Clicked " + card.name);
-        gc.PlayCard(card);
-        Destroy(gameObject);
+        if (gc.currentPlayer == 1 && gc.player1.currentEnergy >= card.cardCost || gc.currentPlayer == 2 && gc.player2.currentEnergy >= card.cardCost)
+        {
+            gc.PlayCard(card);
+            Destroy(gameObject);
+        }
+        else transform.DOShakePosition( .1f, 20, 100, 45);
     }
 }

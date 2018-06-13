@@ -22,12 +22,16 @@ public class UIController : MonoBehaviour
     [SerializeField] Transform p1;
     [SerializeField] Transform handP1;
 
+    [SerializeField] TextMeshProUGUI energyP1;
+
     [Space(10)]
 
     [Header("Player 2")]
 
     [SerializeField] Transform p2;
     [SerializeField] Transform handP2;
+
+    [SerializeField] TextMeshProUGUI energyP2;
 
     [Space(10)]
 
@@ -90,41 +94,54 @@ public class UIController : MonoBehaviour
     {
         if (gc.currentPlayer == 1)
         {
-            p1.gameObject.SetActive(true);//Quero que isso aqui demore
-            p2.gameObject.SetActive(false);//E isso
+            p1.gameObject.SetActive(true);
+            p2.gameObject.SetActive(false);
         }
         else if (gc.currentPlayer == 2)
         {
-            p2.gameObject.SetActive(true);//E isso
-            p1.gameObject.SetActive(false);//E isso //Quebra não //Tá tudo vermelho
+            p2.gameObject.SetActive(true);
+            p1.gameObject.SetActive(false);
         }
+
+
+    }
+
+    public void UpdateEnergy()
+    {
+        energyP1.text = gc.player1.currentEnergy.ToString();
+        energyP2.text = gc.player2.currentEnergy.ToString();
     }
 
     public void UpdateHand(int player)
     {
         if (player == 1)
         {
-            foreach (Transform card in handP1) Destroy(card);
+            foreach (Transform card in handP1.transform) Destroy(card.gameObject);
 
-            for (int i = 0; i < GameController.handSize; i++)
+            foreach (Card card in gc.player1.hand)
             {
                 Instantiate(handCard, handP1);
-                handP1.GetChild(i).GetComponent<CardManager>().UpdateCard(gc.player1.hand[i]);
+                handP1.GetChild(handP1.childCount - 1).GetComponent<CardManager>().UpdateCard(card);
             }
+
+            energyP1.text = gc.player1.currentEnergy.ToString();
 
         }
         
         if (player == 2)
         {
-            foreach (Transform card in handP2) Destroy(card);
+            foreach (Transform card in handP2.transform) Destroy(card.gameObject);
 
-            for (int i = 0; i < GameController.handSize; i++)
+            foreach (Card card in gc.player2.hand)
             {
                 Instantiate(handCard, handP2);
-                handP2.GetChild(i).GetComponent<CardManager>().UpdateCard(gc.player2.hand[i]);
+                handP2.GetChild(handP2.childCount - 1).GetComponent<CardManager>().UpdateCard(card);
             }
 
+            energyP2.text = gc.player2.currentEnergy.ToString();
+
         }
+        
     }
 
 
