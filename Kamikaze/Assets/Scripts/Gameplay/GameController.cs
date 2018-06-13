@@ -28,10 +28,12 @@ public class GameController : MonoBehaviour
 	[SerializeField] Transform UI;
     [SerializeField] GameObject token;
 
+	CameraController cam;
+
 	void Start ()
 	{
 		SetupGame();
-
+		cam = GetComponent<CameraController>();
 	}
 	
 	void Update ()
@@ -61,6 +63,10 @@ public class GameController : MonoBehaviour
 		//Empty decks
 		player1.deck = new List<Card>(30);
 		player2.deck = new List<Card>(30);
+
+		//Empty tokens
+		player1.tokens = new List<Transform>();
+		player2.tokens = new List<Transform>();
 
 		//Fill decks
 		for (int i = 0; i < deckSize; i++)
@@ -122,6 +128,8 @@ public class GameController : MonoBehaviour
 
 		UI.GetComponent<UIController>().UpdateHand(1);
 		UI.GetComponent<UIController>().UpdateHand(2);
+
+		cam.ResetRotation(currentPlayer);
 	}
 
     public void PlayCard(Card card)
@@ -155,10 +163,11 @@ public class GameController : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit) && hit.transform.name == "Field")
         {
-            //Give it a parent at some point;
             GameObject newToken = Instantiate(token, hit.point, Quaternion.identity, null);
             newToken.GetComponent<Token>().SetCard(currentCard);
 			newToken.GetComponent<Token>().SetPlayer(currentPlayer);
+			if (currentPlayer == 1) player1.tokens.Add(newToken.transform);
+			else if (currentPlayer == 2) player1.tokens.Add(newToken.transform);
             //print("Token positioned");
         }
 

@@ -9,11 +9,17 @@ public class Token : MonoBehaviour
 	Transform mesh; //Has to be the first child (index 0).
 	Collider col;
 
+	[SerializeField] int health;
+
+	bool canMove = true;
+	bool canAttack = true;
+
 	LineRenderer line;
 
 	public int owner;
 
 	bool isMoving = false;
+	bool isAttacking = false;
 
 	//References
 	[SerializeField] Transform UI;
@@ -49,7 +55,7 @@ public class Token : MonoBehaviour
 	
 	void Update ()
 	{
-		//Debug.DrawRay(Input.mousePosition, cam.forward);
+		//Movement
 		if(Input.GetMouseButtonDown(0) && isMoving)
 		{
 			//print("1");
@@ -68,8 +74,50 @@ public class Token : MonoBehaviour
 			}
 			else isMoving = false;
 			line.enabled = false;
+
+			canMove = false;
 		}
 
+		if(isMoving)
+		{
+			line.SetPosition(0, transform.position + Vector3.up * .25f);
+			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			RaycastHit hit;
+
+			if (Physics.Raycast(ray, out hit) && hit.transform.name == "Field" && hit.transform.GetComponent<Token>().owner != owner)
+			{
+				line.enabled = true;
+				transform.LookAt(hit.point);
+				if (Vector3.Distance(transform.position, hit.point) < card.moveDistance) line.SetPosition(1, transform.position + transform.forward.normalized * (Vector3.Distance(transform.position, hit.point)) + Vector3.up * .25f);
+				else line.SetPosition(1, transform.position + transform.forward.normalized * 3  + Vector3.up * .25f);
+			}
+			else line.enabled = false;
+		}
+
+		//Attacking
+		if(Input.GetMouseButtonDown(1) && isAttacking)
+		{
+			//print("1");
+			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			RaycastHit hit;
+
+			if (Physics.Raycast(ray, out hit) && hit.transform.tag == "Token")
+			{
+				print("Hit a Token");
+				transform.LookAt(hit.transform.position);
+				if (Vector3.Distance(transform.position, hit.transform.position) < 2) hit.transform.GetComponent<Token>().TakeDamage(card.attack);
+				//else transform.DOMove(transform.position + transform.forward.normalized * 3, .25f);
+				//print("2");
+				isAttacking = false;
+				//line.enabled = false;
+				//transform.DOMove(hit.point, .25f);
+			}
+			else isAttacking = false;
+			//line.enabled = false;
+
+			canAttack = false;
+		}
+		/*
 		if(isMoving)
 		{
 			line.SetPosition(0, transform.position + Vector3.up * .25f);
@@ -85,12 +133,33 @@ public class Token : MonoBehaviour
 			}
 			else line.enabled = false;
 		}
+		*/
 	}
 
     public void SetCard(Card newCard)
     {
         card = newCard;
+		if (newCard.Type == Card.cardType.Unit) health = newCard.unitHealth;
+		else if (newCard.Type == Card.cardType.Structure) health = newCard.structureHealth;
     }
+
+	public void Reset()
+	{
+		canAttack = true;
+		canMove = true;
+	}
+
+	public void TakeDamage(int damage)
+	{
+		print("Hit");
+		health -= damage;
+		if (health <= 0) Die();
+	}
+
+	void Die()
+	{
+		Destroy(gameObject);
+	}
 
 	IEnumerator Move()
 	{
@@ -98,6 +167,13 @@ public class Token : MonoBehaviour
 		yield return new WaitForSeconds(.05f);
 		isMoving = true;
 		line.enabled = true;
+	}
+
+	IEnumerator Attack()
+	{
+		print("Started Attack");
+		yield return new WaitForSeconds(.05f);
+		isAttacking = true;
 	}
 
 	void OnMouseEnter()
@@ -110,10 +186,27 @@ public class Token : MonoBehaviour
 		UI.GetComponent<UIController>().ShowCard();
 	}
 
+	/*
 	void OnMouseDown()
 	{
 		UI.GetComponent<UIController>().ShowCard();
-		if (gc.currentPlayer == owner && !isMoving) StartCoroutine(Move());
+		if (gc.currentPlayer == owner && !isMoving)
+		{
+			if (Input.GetMouseButtonDown(0)) StartCoroutine(Move());
+			else if (Input.GetMouseButtonDown(1)) StartCoroutine(Attack());
+		}
 		else return;
+	}
+	*/
+
+	void OnMouseOver()
+	{
+		if (gc.currentPlayer == owner && !isMoving)
+		{
+			if (Input.GetMouseButtonDown(0)) StartCoroutine(Move());
+			else if (Input.GetMouseButtonDown(1)) StartCoroutine(Attack());
+
+			UI.GetComponent<UIController>().ShowCard();
+		}
 	}
 }

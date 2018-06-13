@@ -44,4 +44,18 @@ public class CameraController : MonoBehaviour
 		//if (Input.GetKeyDown(KeyCode.S)) UI.GetComponent<UIController>().ShowCard();
 
 	}
+
+	public void ResetRotation(int player)
+	{
+		if (player == 1)
+		{
+			transform.DOMove(Vector3.zero, .5f);
+			transform.DORotate(new Vector3(0, 45, 0), .1f);
+		}
+		else if (player == 2)
+		{
+			transform.DOMove(Vector3.zero, .5f);
+			transform.DORotate(new Vector3(0, -135, 0), .1f);
+		}
+	}
 }

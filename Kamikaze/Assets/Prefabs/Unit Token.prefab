@@ -25,7 +25,7 @@ GameObject:
   - component: {fileID: 65434840631017884}
   m_Layer: 0
   m_Name: Unit Token
-  m_TagString: Untagged
+  m_TagString: Token
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -905,6 +905,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7d0899872e1b454f9bd083245f001fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  health: 0
+  owner: 0
   UI: {fileID: 0}
   card: {fileID: 0}
 --- !u!120 &120814955917506214
