@@ -121,6 +121,13 @@ public class GameController : MonoBehaviour
         }
     }
 
+	public void ResetTokens()
+
+	{
+		foreach (Transform token in player1.tokens) token.GetComponent<Token>().Reset();
+		foreach (Transform token in player2.tokens) token.GetComponent<Token>().Reset();
+	}
+
 	void CallSwitchUI()
 	{
 		UI.GetComponent<UIController>().SwitchUI();

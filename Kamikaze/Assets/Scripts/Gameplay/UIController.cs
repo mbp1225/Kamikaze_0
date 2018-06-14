@@ -35,6 +35,10 @@ public class UIController : MonoBehaviour
 
     [Space(10)]
 
+    [Header("Command Help")]
+    [SerializeField] Transform commandUI;
+    [SerializeField] Transform attackUI;
+    [SerializeField] Transform moveUI;
 
     [Header("Turn Cover")]
     [SerializeField] Transform turnCover;
@@ -78,12 +82,34 @@ public class UIController : MonoBehaviour
 
 	public void ShowCard (Card card)
 	{
-		UICard.transform.localPosition = new Vector3(Input.mousePosition.x - Screen.width/2 + Screen.width/5, Input.mousePosition.y - Screen.height/2, 0);
+        print("Showing card");
+        if  (Input.mousePosition.x < Screen.width/2) UICard.transform.localPosition = new Vector3(Input.mousePosition.x - Screen.width/2 + Screen.width/5, Input.mousePosition.y - Screen.height/2, 0);
+        else UICard.transform.localPosition = new Vector3(Input.mousePosition.x - Screen.width/2 - Screen.width/5, Input.mousePosition.y - Screen.height/2, 0);
 
         UICard.GetComponent<CardManager>().UpdateCard(card);
 
         UICard.SetActive(true);
 	}
+
+    public void ShowCommandUI (bool canMove, bool canAttack)
+	{
+        print("Showing Command UI");
+        if  (Input.mousePosition.y < Screen.height/2) commandUI.transform.localPosition = new Vector3(Input.mousePosition.x - Screen.width/2, Input.mousePosition.y - Screen.height/2 - Screen.height/11, 0);
+        else commandUI.transform.localPosition = new Vector3(Input.mousePosition.x - Screen.width/2, Input.mousePosition.y - Screen.height/2 - Screen.height/11, 0);
+        
+        if (canMove) moveUI.gameObject.GetComponent<Image>().color = Color.white;
+        else moveUI.gameObject.GetComponent<Image>().color = Color.grey;
+
+        if (canAttack) attackUI.gameObject.GetComponent<Image>().color = Color.white;
+        else attackUI.gameObject.GetComponent<Image>().color = Color.grey;
+        
+        commandUI.gameObject.SetActive(true);
+	}
+
+    public void HideCommandUI()
+    {
+        commandUI.gameObject.SetActive(false);
+    }
 
 	public void ShowCard ()
 	{
@@ -101,6 +127,8 @@ public class UIController : MonoBehaviour
         {
             p2.gameObject.SetActive(true);
             p1.gameObject.SetActive(false);
+
+            gc.ResetTokens();
         }
 
 

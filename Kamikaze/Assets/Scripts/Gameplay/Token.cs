@@ -11,8 +11,8 @@ public class Token : MonoBehaviour
 
 	[SerializeField] int health;
 
-	bool canMove = true;
-	bool canAttack = true;
+	public bool canMove = true;
+	public bool canAttack = true;
 
 	LineRenderer line;
 
@@ -84,7 +84,7 @@ public class Token : MonoBehaviour
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hit;
 
-			if (Physics.Raycast(ray, out hit) && hit.transform.name == "Field" && hit.transform.GetComponent<Token>().owner != owner)
+			if (Physics.Raycast(ray, out hit) && hit.transform.name == "Field")
 			{
 				line.enabled = true;
 				transform.LookAt(hit.point);
@@ -101,7 +101,7 @@ public class Token : MonoBehaviour
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hit;
 
-			if (Physics.Raycast(ray, out hit) && hit.transform.tag == "Token")
+			if (Physics.Raycast(ray, out hit) && hit.transform.tag == "Token" && hit.transform.GetComponent<Token>().owner != owner)
 			{
 				print("Hit a Token");
 				transform.LookAt(hit.transform.position);
@@ -113,27 +113,33 @@ public class Token : MonoBehaviour
 				//transform.DOMove(hit.point, .25f);
 			}
 			else isAttacking = false;
-			//line.enabled = false;
+			line.enabled = false;
 
 			canAttack = false;
 		}
-		/*
-		if(isMoving)
+		
+		if(isAttacking)
 		{
 			line.SetPosition(0, transform.position + Vector3.up * .25f);
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hit;
 
+			if (Physics.Raycast(ray, out hit) && hit.transform.tag == "Token" && hit.transform.GetComponent<Token>().owner != owner)
+			{
+				line.enabled = true;
+				transform.LookAt(hit.transform.position);
+				line.SetPosition(1, hit.transform.position + Vector3.up * .25f);
+			}
 			if (Physics.Raycast(ray, out hit) && hit.transform.name == "Field")
 			{
 				line.enabled = true;
 				transform.LookAt(hit.point);
-				if (Vector3.Distance(transform.position, hit.point) < card.moveDistance) line.SetPosition(1, transform.position + transform.forward.normalized * (Vector3.Distance(transform.position, hit.point)) + Vector3.up * .25f);
-				else line.SetPosition(1, transform.position + transform.forward.normalized * 3  + Vector3.up * .25f);
+				if (Vector3.Distance(transform.position, hit.point) < 2) line.SetPosition(1, transform.position + transform.forward.normalized * (Vector3.Distance(transform.position, hit.point)) + Vector3.up * .25f);
+				else line.SetPosition(1, transform.position + transform.forward.normalized * 2 + Vector3.up * .25f);
 			}
 			else line.enabled = false;
 		}
-		*/
+		
 	}
 
     public void SetCard(Card newCard)
@@ -163,6 +169,8 @@ public class Token : MonoBehaviour
 
 	IEnumerator Move()
 	{
+		line.startColor = Color.green;
+		line.endColor = Color.green;
 		//print("Started Movement");
 		yield return new WaitForSeconds(.05f);
 		isMoving = true;
@@ -171,19 +179,25 @@ public class Token : MonoBehaviour
 
 	IEnumerator Attack()
 	{
+		line.startColor = Color.red;
+		line.endColor = Color.red;
 		print("Started Attack");
 		yield return new WaitForSeconds(.05f);
 		isAttacking = true;
+		line.enabled = true;
 	}
 
 	void OnMouseEnter()
 	{
+		print("Over token");
 		UI.GetComponent<UIController>().ShowCard(card);
+		if (gc.currentPlayer == owner) UI.GetComponent<UIController>().ShowCommandUI(canMove, canAttack);
 	}
 
 	void OnMouseExit()
 	{
 		UI.GetComponent<UIController>().ShowCard();
+		UI.GetComponent<UIController>().HideCommandUI();
 	}
 
 	/*
@@ -203,10 +217,10 @@ public class Token : MonoBehaviour
 	{
 		if (gc.currentPlayer == owner && !isMoving)
 		{
-			if (Input.GetMouseButtonDown(0)) StartCoroutine(Move());
-			else if (Input.GetMouseButtonDown(1)) StartCoroutine(Attack());
+			if (Input.GetMouseButtonDown(0) && canMove) StartCoroutine(Move());
+			else if (Input.GetMouseButtonDown(1) && canAttack) StartCoroutine(Attack());
 
-			UI.GetComponent<UIController>().ShowCard();
+			//UI.GetComponent<UIController>().ShowCard();
 		}
 	}
 }
