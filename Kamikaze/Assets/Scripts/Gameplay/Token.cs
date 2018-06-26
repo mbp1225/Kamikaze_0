@@ -24,6 +24,7 @@ public class Token : MonoBehaviour
 	//References
 	[SerializeField] Transform UI;
 	[SerializeField] Card card;
+	[SerializeField] Transform radiusMesh;
 
 	GameController gc;
 
@@ -45,11 +46,13 @@ public class Token : MonoBehaviour
 		{
 			owner = 1;
 			transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Color.blue;
+			radiusMesh.GetComponent<MeshRenderer>().material.SetColor ("_TintColor", new Color(0,0,.5f,.1f));
 		}
 		if (n == 2)
 		{
 			owner = 2;
 			transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Color.red;
+			radiusMesh.GetComponent<MeshRenderer>().material.SetColor ("_TintColor", new Color(.5f,0,0,.1f));
 		}
 	}
 	
@@ -145,8 +148,16 @@ public class Token : MonoBehaviour
     public void SetCard(Card newCard)
     {
         card = newCard;
-		if (newCard.Type == Card.cardType.Unit) health = newCard.unitHealth;
-		else if (newCard.Type == Card.cardType.Structure) health = newCard.structureHealth;
+		if (newCard.Type == Card.cardType.Unit)
+		{
+			health = newCard.unitHealth;
+			radiusMesh.localScale = Vector3.zero;
+		}
+		else if (newCard.Type == Card.cardType.Structure)
+		{
+			health = newCard.structureHealth;
+			radiusMesh.localScale = Vector3.one * newCard.influenceRadius;
+		}
     }
 
 	public void Reset()
