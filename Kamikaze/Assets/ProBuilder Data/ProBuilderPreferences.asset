@@ -3,7 +3,7 @@
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
@@ -14,24 +14,17 @@ MonoBehaviour:
   m_Bool_keys: []
   m_Int_keys:
   - pbHandleAlignment
-  - pbDefaultEditLevel
-  - pbDefaultSelectionMode
-  - pb_GIWorkflowMode
   m_Float_keys:
   - pbEditorScroll.x
   - pbEditorScroll.y
-  m_String_keys:
-  - pbVertexColorPrefs9
-  - pbVertexColorPrefs8
+  m_String_keys: []
   m_Color_keys: []
   m_Material_keys: []
   m_Bool_values: 
-  m_Int_values: 00000000040000000200000001000000
+  m_Int_values: 00000000
   m_Float_values:
   - 0
   - 0
-  m_String_values:
-  - RGBA(0.000, 0.000, 0.000, 0.000)
-  - RGBA(0.114, 0.114, 0.114, 1.000)
+  m_String_values: []
   m_Color_values: []
   m_Material_values: []

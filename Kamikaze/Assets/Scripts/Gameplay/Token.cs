@@ -191,7 +191,7 @@ public class Token : MonoBehaviour
 	{
 		print("Over token");
 		UI.GetComponent<UIController>().ShowCard(card);
-		if (gc.currentPlayer == owner) UI.GetComponent<UIController>().ShowCommandUI(canMove, canAttack);
+		if (gc.currentPlayer == owner && card.Type == Card.cardType.Unit) UI.GetComponent<UIController>().ShowCommandUI(canMove, canAttack);
 	}
 
 	void OnMouseExit()
@@ -215,7 +215,7 @@ public class Token : MonoBehaviour
 
 	void OnMouseOver()
 	{
-		if (gc.currentPlayer == owner && !isMoving)
+		if (gc.currentPlayer == owner && !isMoving && card.Type == Card.cardType.Unit)
 		{
 			if (Input.GetMouseButtonDown(0) && canMove) StartCoroutine(Move());
 			else if (Input.GetMouseButtonDown(1) && canAttack) StartCoroutine(Attack());
